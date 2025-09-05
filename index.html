@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Link Bio Cá Nhân</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #0a0a1a;
+            overflow: hidden;
+            position: relative;
+            color: white;
+            touch-action: manipulation;
+        }
+        
+        #bg-video {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            transform: translateX(-50%) translateY(-50%);
+            z-index: -1;
+            object-fit: cover;
+        }
+        
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(10, 10, 26, 0.85) 0%, rgba(20, 15, 40, 0.7) 100%);
+            z-index: -1;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            padding: 30px 25px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            z-index: 1;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            animation: containerFade 1s ease-out;
+        }
+        
+        @keyframes containerFade {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .avatar-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #fff;
+            box-shadow: 0 0 25px rgba(100, 200, 255, 0.5);
+            transition: all 0.4s ease;
+            background: linear-gradient(45deg, #6a11cb, #2575fc);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            text-align: center;
+            padding: 5px;
+        }
+        
+        .avatar:hover {
+            transform: scale(1.05) rotate(5deg);
+            box-shadow: 0 0 30px rgba(100, 200, 255, 0.8);
+        }
+        
+        h1 {
+            font-size: 24px;
+            margin-bottom: 25px;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(100, 200, 255, 0.7);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+        }
+        
+        .btn-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            padding: 14px 20px;
+            border-radius: 50px;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn-tiktok {
+            background: linear-gradient(45deg, #000000, #25F4EE, #FE2C55);
+            color: white;
+        }
+        
+        .btn-ff {
+            background: linear-gradient(45deg, #ff7e00, #ff4d00, #ffb700);
+            color: white;
+        }
+        
+        .btn-other {
+            background: linear-gradient(45deg, #4361ee, #7209b7, #3a0ca3);
+            color: white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .icon {
+            font-size: 20px;
+            transition: transform 0.3s ease;
+        }
+        
+        .btn:hover .icon {
+            transform: scale(1.2);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        
+        .modal-content {
+            background: rgba(30, 30, 60, 0.9);
+            backdrop-filter: blur(12px);
+            padding: 30px;
+            border-radius: 18px;
+            text-align: center;
+            max-width: 350px;
+            width: 90%;
+            box-shadow: 0 0 35px rgba(80, 150, 255, 0.5);
+            animation: pulse 1.5s infinite;
+            border: 1px solid rgba(100, 100, 255, 0.2);
+        }
+        
+        .countdown {
+            font-size: 24px;
+            margin: 20px 0;
+            color: #4cc9f0;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(76, 201, 240, 0.6);
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+            100% { transform: scale(1); }
+        }
+        
+        .social-text {
+            margin-top: 20px;
+            color: rgba(200, 220, 255, 0.9);
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+        
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .social-icons a {
+            color: rgba(200, 220, 255, 0.9);
+            font-size: 22px;
+            transition: all 0.3s ease;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .social-icons a:hover {
+            transform: translateY(-5px);
+            color: #4cc9f0;
+            background: rgba(76, 201, 240, 0.2);
+            box-shadow: 0 5px 15px rgba(76, 201, 240, 0.3);
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        /* Thông báo âm thanh */
+        .audio-notice {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(30, 30, 60, 0.9);
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 13px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(100, 100, 255, 0.2);
+            display: none;
+            z-index: 10;
+            color: #4cc9f0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Fallback khi ảnh lỗi */
+        .avatar-fallback {
+            display: none;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #6a11cb, #2575fc);
+            color: white;
+            font-weight: bold;
+            font-size: 40px;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid #fff;
+            box-shadow: 0 0 25px rgba(100, 200, 255, 0.5);
+        }
+        
+        /* Hiệu ứng tải */
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0a0a1a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-top: 5px solid #4cc9f0;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Màn hình tải -->
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+    </div>
+    
+    <!-- Video nền với âm thanh tích hợp -->
+    <video autoplay muted loop id="bg-video" poster="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==">
+        <source src="https://github.com/phamlong6677t-create/Bio/blob/main/lv_7486729577046314293_20250831154225.mp4?raw=true" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <div class="overlay"></div>
+    
+    <!-- Container chính -->
+    <div class="container">
+        <div class="avatar-container">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSYXLVodZ1fv-igKGjiOJbptnKRM3HBd_vvsw&usqp=CAU" alt="Avatar" class="avatar" id="avatar-img" onerror="this.style.display='none'; document.getElementById('avatar-fallback').style.display='flex';">
+            <div class="avatar-fallback" id="avatar-fallback">T</div>
+        </div>
+        <h1>TUANN (pongg🐾)&gt;&lt;</h1>
+        
+        <div class="btn-container">
+            <button class="btn btn-tiktok" onclick="handleTikTokClick()">
+                <span class="icon"><i class="fab fa-tiktok"></i></span>
+                <span>TikTok</span>
+            </button>
+            
+            <button class="btn btn-ff" onclick="handleFFClick()">
+                <span class="icon"><i class="fas fa-gamepad"></i></span>
+                <span>Free Fire</span>
+            </button>
+            
+            <button class="btn btn-other" onclick="handleOtherClick()">
+                <span class="icon"><i class="fas fa-link"></i></span>
+                <span>Liên kết khác</span>
+            </button>
+        </div>
+        
+        <p class="social-text">KẾT NỐI VỚI TÔI</p>
+        <div class="social-icons">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-youtube"></i></a>
+            <a href="#"><i class="fab fa-zalo"></i></a>
+        </div>
+    </div>
+    
+    <!-- Modal thông báo -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <p id="modal-message">Đang chuyển hướng...</p>
+            <div class="countdown" id="countdown">3</div>
+            <p>Trang sẽ tự động chuyển hướng</p>
+        </div>
+    </div>
+    
+    <!-- Thông báo âm thanh -->
+    <div class="audio-notice" id="audio-notice">
+        <i class="fas fa-volume-up"></i> Âm thanh đã được bật
+    </div>
+    
+    <script>
+        // Các biến toàn cục
+        let countdownInterval;
+        const ffId = "2254142388";
+        const tiktokUrl = "https://tiktok.com/@tuann2k11";
+        const otherUrl = "#"; // Thay bằng URL của bạn
+        
+        // Ẩn màn hình tải khi trang đã tải xong
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                document.getElementById('loading').style.opacity = '0';
+                setTimeout(function() {
+                    document.getElementById('loading').style.display = 'none';
+                }, 500);
+            }, 1000);
+        });
+        
+        // Chống zoom trên mobile
+        document.addEventListener('touchstart', function(event) {
+            if (event.touches.length > 1) {
+                event.preventDefault();
+            }
+        }, { passive: false });
+
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function(event) {
+            const now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, { passive: false });
+
+        document.addEventListener('gesturestart', function(event) {
+            event.preventDefault();
+        });
+        
+        // Xử lý click TikTok
+        function handleTikTokClick() {
+            showModal("3 giây nữa sẽ chuyển hướng đến TikTok...", redirectToTikTok);
+        }
+        
+        // Xử lý click Free Fire
+        function handleFFClick() {
+            copyToClipboard(ffId);
+            showModal(`ID Free Fire: ${ffId} (Đã sao chép)<br>3 giây nữa sẽ mở Free Fire...`, redirectToFreeFire);
+        }
+        
+        // Xử lý click nút Khác
+        function handleOtherClick() {
+            window.location.href = otherUrl;
+        }
+        
+        // Hiển thị modal đếm ngược
+        function showModal(message, callback) {
+            const modal = document.getElementById("modal");
+            const modalMessage = document.getElementById("modal-message");
+            const countdownEl = document.getElementById("countdown");
+            
+            modalMessage.innerHTML = message;
+            modal.style.display = "flex";
+            
+            let count = 3;
+            countdownEl.textContent = count;
+            
+            clearInterval(countdownInterval);
+            countdownInterval = setInterval(() => {
+                count--;
+                countdownEl.textContent = count;
+                
+                if (count <= 0) {
+                    clearInterval(countdownInterval);
+                    modal.style.display = "none";
+                    callback();
+                }
+            }, 1000);
+        }
+        
+        // Chuyển hướng đến TikTok
+        function redirectToTikTok() {
+            window.location.href = tiktokUrl;
+        }
+        
+        // Chuyển hướng đến Free Fire
+        function redirectToFreeFire() {
+            // Thử mở Free Fire thường trước
+            window.location.href = "freefire://game";
+            
+            // Nếu không thành công, sau 1 giây sẽ thử mở Free Fire MAX
+            setTimeout(() => {
+                window.location.href = "https://play.google.com/store/apps/details?id=com.dts.freefireth";
+            }, 1000);
+        }
+        
+        // Sao chép vào clipboard
+        function copyToClipboard(text) {
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text);
+            } else {
+                const textarea = document.createElement("textarea");
+                textarea.value = text;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand("copy");
+                document.body.removeChild(textarea);
+            }
+        }
+        
+        // Tự động phát video với âm thanh khi trang được tải
+        window.addEventListener('DOMContentLoaded', () => {
+            // Phát video nền với âm thanh
+            const video = document.getElementById("bg-video");
+            
+            // Bỏ thuộc tính muted để phát âm thanh
+            video.muted = false;
+            video.volume = 0.4; // Đặt âm lượng vừa phải
+            
+            // Thử phát video với âm thanh
+            const playVideoWithAudio = () => {
+                const promise = video.play();
+                if (promise !== undefined) {
+                    promise.then(() => {
+                        // Hiển thị thông báo âm thanh đã bật
+                        const notice = document.getElementById("audio-notice");
+                        notice.style.display = "block";
+                        setTimeout(() => {
+                            notice.style.display = "none";
+                        }, 3000);
+                    }).catch(error => {
+                        console.log("Video autoplay with audio prevented: ", error);
+                        // Nếu không được phép tự động phát âm thanh, thử phát không âm thanh
+                        video.muted = true;
+                        video.play();
+                        
+                        // Thêm sự kiện click để kích hoạt âm thanh
+                        document.body.addEventListener('click', () => {
+                            video.muted = false;
+                            console.log("Audio enabled after user interaction");
+                        }, { once: true });
+                    });
+                }
+            };
+            
+            playVideoWithAudio();
+        });
+    </script>
+</body>
+    </html>
